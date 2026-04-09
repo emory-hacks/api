@@ -1,5 +1,9 @@
 package com.example.demo;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.user.User;
+import com.example.demo.user.UserRepository;
+
 import java.util.List;
 @RestController
 @CrossOrigin(origins = "*")
