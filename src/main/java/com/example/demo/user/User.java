@@ -1,6 +1,10 @@
 package com.example.demo.user;
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -37,6 +41,40 @@ public class User {
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    //private final UserRepository userRepo = new UserRepository();
+    public class e extends Exception{
+        public e(String message) {
+                super(message);
+        }
+    }
+    public void setPassword(String password){
+        this.password=password;
+    }
+
+    /*public void setPassword(String password) throws e {
+        boolean digit = password.matches(".*[0-9].*");
+        boolean characters = password.matches(".*\\d{8}.*");
+        boolean specialCharacter = password.matches(".*[\\D&&\\W].*");
+        if(digit && characters && specialCharacter){
+            this.password = password;
+        }
+        else{
+            throw new e("Password invalid. Must include at least eight characters, one letter, and one symbol.");
+
+            }
+        }*/
+
+
+         /*@Repository
+        public interface UserRepository extends JpaRepository<User, Long>{
+
+         }*/
+         //@Service
+        //public class UserService(UserRepository userRepository){
+            //private final UserRepository userRepo;
+            //private final UserRepository userRepo;
+
+        // }
+
 
 }
