@@ -1,0 +1,11 @@
+com\hackathon\event\EventRepository.class
+com\hackathon\user\User.class
+com\hackathon\HelloController.class
+com\hackathon\controller\HealthController.class
+com\hackathon\user\UserRepository.class
+com\hackathon\user\UserController.class
+com\hackathon\config\SecurityConfig.class
+com\hackathon\notification\NotificationRepository.class
+com\hackathon\SpringExperienceApplication.class
+com\hackathon\notification\Notification.class
+com\hackathon\event\Event.class

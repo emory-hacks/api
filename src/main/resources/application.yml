@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: SpringExperience
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hackathon_db
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: yourpassword //REPLACE WITH REAL PASSWORD
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
