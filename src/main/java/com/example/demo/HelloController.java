@@ -1,4 +1,5 @@
 package com.example.demo;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.user.User;
@@ -31,7 +32,7 @@ public class HelloController {
     }
 
    @GetMapping("/")
-    public String index(){
-       return "Spring is officially working!";
+    public String index(HttpServletRequest request){
+       return "Spring is officially working! " + request.getSession().getId();
    }
 }
