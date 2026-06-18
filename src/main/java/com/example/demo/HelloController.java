@@ -1,5 +1,6 @@
 package com.example.demo;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.user.User;
@@ -34,5 +35,10 @@ public class HelloController {
    @GetMapping("/")
     public String index(HttpServletRequest request){
        return "Spring is officially working! " + request.getSession().getId();
+   }
+
+   @GetMapping("/csrf-token")
+   public CsrfToken getCsrfToken(HttpServletRequest request) {
+        return (CsrfToken) request.getAttribute("_csrf");
    }
 }
