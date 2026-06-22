@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -16,9 +17,13 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12); //12 hashes is security standard
+
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
         // hash password here
-        return userRepository.save(user);
+        user.setPassword(encoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return user;
     }
 }
