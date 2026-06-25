@@ -5,12 +5,13 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/auth")
 public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         //make sure to generate JWT string (example might be String jwtToken = jwtUtils.generateToken(username);)
-        String jwtToken = "put jwt placehodler here";
+        //REPLACE BELOW WITH GENERATED CRYPTOGRAPHIC STRING FROM JAVA LIBRARY FOR COMPLETE SECURITY
+        String jwtToken = "put_jwt_place_hodler_here";
         ResponseCookie cookie = ResponseCookie.from("token", jwtToken)
                 .httpOnly(true)
                 //Set this to true, as brosere sreject cross-domain cookeis unlesss they run over HTTPS, so switch once you take this live and move from production env
