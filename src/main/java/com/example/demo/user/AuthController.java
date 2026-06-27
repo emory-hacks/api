@@ -12,6 +12,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         //make sure to generate JWT string (example might be String jwtToken = jwtUtils.generateToken(username);)
         //REPLACE BELOW WITH GENERATED CRYPTOGRAPHIC STRING FROM JAVA LIBRARY FOR COMPLETE SECURITY
+        // important things to store in jwt token: username, role, and expiration date.
         String jwtToken = "put_jwt_place_hodler_here";
         ResponseCookie cookie = ResponseCookie.from("token", jwtToken)
                 .httpOnly(true)
