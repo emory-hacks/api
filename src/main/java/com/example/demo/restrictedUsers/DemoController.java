@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController{
     @GetMapping
     public ResponseEntity<String> sayHello(){
-        return ResponseEntity.ok("Hello! YOu have successfully accessed a secured endpoint in JWT");
+        return ResponseEntity.ok("Hello! You have successfully accessed a secured endpoint in JWT");
     }
 }
 
