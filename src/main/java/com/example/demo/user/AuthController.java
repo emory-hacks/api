@@ -15,7 +15,7 @@ public class AuthController {
         String jwtToken = "put_jwt_place_hodler_here";
         ResponseCookie cookie = ResponseCookie.from("token", jwtToken)
                 .httpOnly(true)
-                //Set this to true, as brosere sreject cross-domain cookeis unlesss they run over HTTPS, so switch once you take this live and move from production env
+                //Set this to true, as browser rejects cross-domain cookeis unlesss they run over HTTPS, so switch once you take this live and move to production env
                 .secure(false)
                 .path("/")
                 .maxAge(15*60)
