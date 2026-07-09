@@ -15,10 +15,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
-        var user = userRepository.findByEmail(loginRequest.getEmail());
+        var user = userRepository.findByUsername(loginRequest.getUsername());
         if (user.isEmpty() || !user.get().getPassword().equals(loginRequest.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new MessageResponse("Invalid email or password"));
+                    .body(new MessageResponse("Invalid username or password"));
         }
 
         //make sure to generate JWT string (example might be String jwtToken = jwtUtils.generateToken(username);)
