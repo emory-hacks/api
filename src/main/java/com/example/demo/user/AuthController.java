@@ -36,6 +36,6 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new MessageResponse("Logged in successfully!"));
+                .body(new LoginResponse("Logged in successfully!", jwtToken));
     }
 }
