@@ -9,8 +9,8 @@ public class UserService {
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
-    public User findByEmail(String email) {
-       return userRepository.findByEmail(email).orElse(null);
+    public User findByUsername(String userName) {
+       return userRepository.findByEmail(userName).orElse(null);
     }
     public User registerNewUser(User user){
         user.setRole("participant");

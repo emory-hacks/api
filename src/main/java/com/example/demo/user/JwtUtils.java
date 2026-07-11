@@ -6,15 +6,16 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+
 @Component
 public class JwtUtils {
     //TEMP KEY. MAKE PRIVATE
     private final String secretString = "0qlksjepoqsadnfa;sejpawoietq-9548uqw045u1-34q50waoeiszpx/fz.m,x";
     private final long expirationTime = 900_000;
     private final SecretKey secretKey = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
-    public String generateToken(String email, List<String> roles) {
+    public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
-                .subject(email)
+                .subject(username)
                 .claim("roles", roles)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
@@ -33,7 +34,7 @@ public class JwtUtils {
             return false;
         }
     }
-    public String getEmailFromToken(String token){
+    public String getUsernameFromToken(String token){
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()

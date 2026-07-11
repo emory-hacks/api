@@ -5,8 +5,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,11 +25,10 @@ public class AuthController {
         //REPLACE BELOW WITH GENERATED CRYPTOGRAPHIC STRING FROM JAVA LIBRARY FOR COMPLETE SECURITY
         // important things to store in jwt token: username, role, and expiration date.
         //String jwtToken = "put_jwt_place_hodler_here";
-        User user = userService.findByEmail(loginRequest.getEmail());
+        User user = userService.findByUsername(loginRequest.getEmail());
         if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid credentials (user is null)");
-
         }
         if(user.getPassword() == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
