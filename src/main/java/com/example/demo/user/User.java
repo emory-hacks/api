@@ -1,7 +1,9 @@
 package com.example.demo.user;
 
 import jakarta.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 import java.util.List;
 
@@ -67,7 +69,9 @@ public class User {
             role = "participant";
         }
         if (qrToken == null) {
-            qrToken = UUID.randomUUID().toString(); //placeholder for actual qr code string
+            String raw = email;
+            qrToken = Base64.getUrlEncoder().withoutPadding()
+                    .encodeToString(raw.getBytes(StandardCharsets.UTF_8));
         }
         if (name == null && email != null) {
             name = email.split("@")[0];
@@ -94,6 +98,10 @@ public class User {
 
     public String getQrToken() { return qrToken; }
     public void setQrToken(String qrToken) { this.qrToken = qrToken; }
+
+    public static String decodeQrToken(String encoded) {
+        return new String(Base64.getUrlDecoder().decode(encoded), StandardCharsets.UTF_8);
+    }
 
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }

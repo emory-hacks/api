@@ -39,6 +39,16 @@ public class UserController {
         return ResponseEntity.ok(userOptional.get());
     }
 
+    @GetMapping("/{email}/qr-token")
+    @PreAuthorize("authentication.name == #email or hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> getQrToken(@PathVariable String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
+        }
+        return ResponseEntity.ok(userOptional.get().getQrToken());
+    }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
