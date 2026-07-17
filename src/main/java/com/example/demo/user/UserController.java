@@ -40,13 +40,26 @@ public class UserController {
     }
 
     @GetMapping("/{email}/qr-token")
-    @PreAuthorize("authentication.name == #email or hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> getQrToken(@PathVariable String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (!userOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
         }
         return ResponseEntity.ok(userOptional.get().getQrToken());
+    }
+
+    @PostMapping("/{email}/checkin")
+    public ResponseEntity<?> checkinUser(@PathVariable String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
+        }
+        if (user.get().isCheckedIn()) {
+            return ResponseEntity.status(409).body("Error: User already checked in.");
+        }
+        user.get().setCheckedIn(true);
+        userRepository.save(user.get());
+        return ResponseEntity.ok(user.get().getName() + " has checked in!");
     }
 
 
