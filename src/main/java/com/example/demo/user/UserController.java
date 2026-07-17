@@ -39,30 +39,6 @@ public class UserController {
         return ResponseEntity.ok(userOptional.get());
     }
 
-    @GetMapping("/{email}/qr-token")
-    public ResponseEntity<?> getQrToken(@PathVariable String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (!userOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
-        }
-        return ResponseEntity.ok(userOptional.get().getQrToken());
-    }
-
-    @PostMapping("/{email}/checkin")
-    public ResponseEntity<?> checkinUser(@PathVariable String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
-        }
-        if (user.get().isCheckedIn()) {
-            return ResponseEntity.status(409).body("Error: User already checked in.");
-        }
-        user.get().setCheckedIn(true);
-        userRepository.save(user.get());
-        return ResponseEntity.ok(user.get().getName() + " has checked in!");
-    }
-
-
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()){

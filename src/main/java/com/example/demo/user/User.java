@@ -69,7 +69,8 @@ public class User {
             role = "participant";
         }
         if (qrToken == null) {
-            String raw = email;
+            String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 4);
+            String raw = email + suffix;
             qrToken = Base64.getUrlEncoder().withoutPadding()
                     .encodeToString(raw.getBytes(StandardCharsets.UTF_8));
         }
