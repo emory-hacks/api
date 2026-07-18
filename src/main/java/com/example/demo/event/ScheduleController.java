@@ -2,11 +2,10 @@ package com.example.demo.event;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 public class ScheduleController {
@@ -22,6 +21,13 @@ public class ScheduleController {
                 .stream()
                 .map(ScheduleEventResponse::from)
                 .toList();
+    }
+
+    @GetMapping("/schedule/{id}")
+    public ScheduleEventResponse getScheduleById(@PathVariable long id) {
+        return eventRepository.findById(id)
+                .map(ScheduleEventResponse::from)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
