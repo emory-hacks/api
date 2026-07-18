@@ -3,6 +3,7 @@ package com.example.demo.user;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -11,6 +12,21 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    //@ElementCollection(fetch=FetchType.EAGER)
+    //@CollectionTable(name = "user_roles", joinColumns= @JoinColumn(name = "user_id"))
+    //@Column(name="role")
+
+    //private List<String> roles;
+    public List<String> getRoles() {
+        if(this.role == null) {
+            return List.of("ROLE_PARTICIPANT");
+        }
+        return List.of("ROLE_" + this.role.toUpperCase());
+
+    }
+    /*public void setRoles(List<String> roles){
+        this.roles = roles;
+    }*/
 
     private String email;
     private String password;
@@ -18,7 +34,7 @@ public class User {
 
     @Column(name = "team_name")
     private String teamName;
-
+    @Column(name = "role")
     private String role;
 
     @Column(name = "qr_token")
