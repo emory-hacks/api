@@ -1,6 +1,7 @@
 package com.example.demo.event;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,5 +40,31 @@ public class ScheduleController {
         event.setStartTime(request.startTime());
         event.setEndTime(request.endTime());
         return ScheduleEventResponse.from(eventRepository.save(event));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/schedule/{id}")
+    public ScheduleEventResponse updateSchedule(
+            @PathVariable long id,
+            @RequestBody CreateScheduleRequest request) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        event.setTitle(request.name());
+        event.setLocation(request.location());
+        event.setStartTime(request.startTime());
+        event.setEndTime(request.endTime());
+
+        return ScheduleEventResponse.from(eventRepository.save(event));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/schedule/{id}")
+    public Map<String, String> deleteSchedule(@PathVariable long id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        eventRepository.delete(event);
+        return Map.of("message", "Event deleted");
     }
 }
