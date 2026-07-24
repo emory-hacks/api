@@ -1,0 +1,8 @@
+.git
+.gradle
+.idea
+build
+data
+*.md
+.gitattributes
+.gitignore
