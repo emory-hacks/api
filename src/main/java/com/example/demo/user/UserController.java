@@ -50,8 +50,9 @@ public class UserController {
         user.setEmail(registerRequest.getEmail());
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
         user.setPassword(hashedPassword);
-        user.setUsername(registerRequest.getUsername());
+        user.setName(registerRequest.getName());
         user.setRole("participant");
+        user.setTeamName("no team");
         // hash password here
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully.");
