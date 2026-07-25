@@ -36,6 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/register", "/auth/login", "/error", "/api/users/promote/**").permitAll()
                         //.requestMatchers("/api/users/**").hasRole("ADMIN")
                         //.requestMatchers("/api/dashboard/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/announcements").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/announcements").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/*").authenticated()
                         .requestMatchers("/api/tokens/generate").authenticated()
                         .requestMatchers("/api/users/*/add-points").hasAuthority("ROLE_ADMIN")
