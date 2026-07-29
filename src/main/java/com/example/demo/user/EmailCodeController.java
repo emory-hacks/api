@@ -1,7 +1,9 @@
 package com.example.demo.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,8 @@ import java.time.LocalDateTime;
 public class EmailCodeController {
     @Autowired
     private EmailCodeRepository emailCodeRepository;
+    @Autowired
+    private EmailService emailService;
 
     private final SecureRandom secureRandom = new SecureRandom();
 
@@ -28,6 +32,14 @@ public class EmailCodeController {
         emailCode.setExpiration(LocalDateTime.now().plusMinutes(5));
         emailCodeRepository.save(emailCode);
 
-        return ResponseEntity.ok("Verification code generated.");
+        try {
+            emailService.sendVerificationCode(request.getEmail(), code);
+        } catch (MailException | IllegalStateException | IllegalArgumentException e) {
+            Throwable cause = e instanceof MailException mailEx ? mailEx.getMostSpecificCause() : e;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send email: " + cause.getMessage());
+        }
+
+        return ResponseEntity.ok("Verification code sent.");
     }
 }
