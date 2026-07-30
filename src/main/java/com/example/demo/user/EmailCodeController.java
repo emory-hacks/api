@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -41,5 +43,23 @@ public class EmailCodeController {
         }
 
         return ResponseEntity.ok("Verification code sent.");
+    }
+
+    @GetMapping("/verify-user-code")
+    public ResponseEntity<?> verifyUserCode(@RequestBody VerifyUserCodeRequest request) {
+        Optional<EmailCode> emailCodeOptional = emailCodeRepository.findById(request.getEmail());
+        if (emailCodeOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Invalid or expired code.");
+        }
+
+        EmailCode emailCode = emailCodeOptional.get();
+        boolean codeMatches = emailCode.getCode().equals(request.getInputtedCode());
+        boolean notExpired = !request.getCurtime().isAfter(emailCode.getExpiration());
+
+        if (!codeMatches || !notExpired) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Invalid or expired code.");
+        }
+
+        return ResponseEntity.ok("Code verified.");
     }
 }
