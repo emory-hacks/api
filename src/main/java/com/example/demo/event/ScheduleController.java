@@ -31,6 +31,14 @@ public class ScheduleController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
+    @GetMapping("/schedule/current")
+    public Map<String, String> getCurrentEvent(@RequestBody CurrentEventRequest request) {
+        return eventRepository
+                .findFirstByEndTimeGreaterThanEqualOrderByStartTimeAsc(request.currentTime())
+                .map(event -> Map.of("title", event.getTitle()))
+                .orElse(Map.of());
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/schedule")
     public ScheduleEventResponse createSchedule(@RequestBody CreateScheduleRequest request) {
