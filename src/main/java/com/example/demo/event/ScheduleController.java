@@ -24,26 +24,34 @@ public class ScheduleController {
                 .toList();
     }
 
-    @GetMapping("/schedule/{id}")
-    public ScheduleEventResponse getScheduleById(@PathVariable long id) {
-        return eventRepository.findById(id)
-                .map(ScheduleEventResponse::from)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-    }
-
     @GetMapping("/schedule/current")
     public Map<String, String> getCurrentEvent(@RequestBody CurrentEventRequest request) {
+        if (request.currentTime() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "currentTime is required");
+        }
         return eventRepository
                 .findFirstByEndTimeGreaterThanEqualOrderByStartTimeAsc(request.currentTime())
                 .map(event -> Map.of("title", event.getTitle()))
                 .orElse(Map.of());
     }
 
+    @GetMapping("/schedule/{title}")
+    public ScheduleEventResponse getScheduleByTitle(@PathVariable String title) {
+        return eventRepository.findById(title)
+                .map(ScheduleEventResponse::from)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/schedule")
     public ScheduleEventResponse createSchedule(@RequestBody CreateScheduleRequest request) {
+        requireBody(request.body());
+        if (eventRepository.existsById(request.title())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Event already exists");
+        }
         Event event = new Event();
-        event.setTitle(request.name());
+        event.setTitle(request.title());
+        event.setBody(request.body());
         event.setLocation(request.location());
         event.setStartTime(request.startTime());
         event.setEndTime(request.endTime());
@@ -51,14 +59,15 @@ public class ScheduleController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/schedule/{id}")
+    @PutMapping("/schedule/{title}")
     public ScheduleEventResponse updateSchedule(
-            @PathVariable long id,
+            @PathVariable String title,
             @RequestBody CreateScheduleRequest request) {
-        Event event = eventRepository.findById(id)
+        requireBody(request.body());
+        Event event = eventRepository.findById(title)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
-        event.setTitle(request.name());
+        event.setBody(request.body());
         event.setLocation(request.location());
         event.setStartTime(request.startTime());
         event.setEndTime(request.endTime());
@@ -67,12 +76,18 @@ public class ScheduleController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/schedule/{id}")
-    public Map<String, String> deleteSchedule(@PathVariable long id) {
-        Event event = eventRepository.findById(id)
+    @DeleteMapping("/schedule/{title}")
+    public Map<String, String> deleteSchedule(@PathVariable String title) {
+        Event event = eventRepository.findById(title)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
         eventRepository.delete(event);
         return Map.of("message", "Event deleted");
+    }
+
+    private static void requireBody(String body) {
+        if (body == null || body.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Body is required");
+        }
     }
 }

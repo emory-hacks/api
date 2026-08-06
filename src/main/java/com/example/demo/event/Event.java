@@ -7,11 +7,8 @@ import java.time.LocalDateTime;
 public class Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String title;
-    
+
     @Column(columnDefinition = "TEXT")
     private String body;
 
@@ -21,7 +18,6 @@ public class Event {
 
     public Event() {}
 
-    public Long getId() { return id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getBody() { return body; }
