@@ -8,6 +8,7 @@ public class Announcement {
     private Long id;
     private String title;
     private String content;
+    private String publisher;
     @Column(name = "created_at", nullable = false, updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime createdAt;
@@ -35,7 +36,6 @@ public class Announcement {
     public void setCreatedAt(LocalDateTime createdAt){
         this.createdAt = createdAt;
     }
-
-
-
+    public String getPublisher() {return publisher;}
+    public void setPublisher(String publisher) {this.publisher = publisher;}
 }
