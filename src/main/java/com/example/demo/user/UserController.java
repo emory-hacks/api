@@ -14,7 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+    @Autowired
+    private EmailCodeController emailCodeController;
     @Autowired
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -33,24 +34,38 @@ public class UserController {
     public ResponseEntity<?> getUserByEmail(@PathVariable String email){
         Optional<User> userOptional = userRepository.findByEmail(email);
         if(!userOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERror: User not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
 
         }
         return ResponseEntity.ok(userOptional.get());
     }
 
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+    @PostMapping("/register/initiate")
+    public ResponseEntity<?> initiateRegistration(@RequestBody RegisterRequest registerRequest) {
         if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()){
             return ResponseEntity.badRequest().body("Error: Email already taken!");
 
         }
-        User user =  new User();
-        user.setEmail(registerRequest.getEmail());
-        String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        GenerateUserCodeRequest gRequest = new GenerateUserCodeRequest();
+        gRequest.setEmail(registerRequest.getEmail());
+        emailCodeController.generateUserCode(gRequest);
+        return ResponseEntity.ok("Verification code sent");
+
+    }
+    @PostMapping("/register/complete")
+    public ResponseEntity<?> completeRegistration(@RequestBody VerifyUserCodeRequest completeRequest){
+        VerifyUserCodeRequest vRequest = new VerifyUserCodeRequest();
+
+        vRequest.setEmail(completeRequest.getEmail());
+        vRequest.setNewPassword(completeRequest.getNewPassword());
+        vRequest.setCurtime(java.time.LocalDateTime.now());
+        emailCodeController.verifyUserCode(vRequest);
+        User user = new User();
+        user.setEmail(completeRequest.getEmail());
+        String hashedPassword = passwordEncoder.encode(completeRequest.getNewPassword());
         user.setPassword(hashedPassword);
-        user.setName(registerRequest.getName());
+        user.setName(completeRequest.getEmail());
         user.setRole("participant");
         user.setTeamName("no team");
         // hash password here
