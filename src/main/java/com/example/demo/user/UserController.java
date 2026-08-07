@@ -47,6 +47,10 @@ public class UserController {
 
         }
         User user =  new User();
+        String email = registerRequest.getEmail();
+        if (email.length() <= 4 || !email.endsWith(".edu")) {
+            return ResponseEntity.badRequest().body("Error: Email should end with '.edu'");
+        }
         user.setEmail(registerRequest.getEmail());
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
         user.setPassword(hashedPassword);
