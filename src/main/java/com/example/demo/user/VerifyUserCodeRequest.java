@@ -7,6 +7,7 @@ public class VerifyUserCodeRequest {
     private String email;
     @JsonProperty("inputted_code")
     private String inputtedCode;
+    private String newPassword;
     private LocalDateTime curtime;
 
     public String getEmail() {
@@ -31,5 +32,12 @@ public class VerifyUserCodeRequest {
 
     public void setCurtime(LocalDateTime curtime) {
         this.curtime = curtime;
+    }
+
+    public void setNewPassword(String newPassword){
+        this.newPassword = newPassword;
+    }
+    public String getNewPassword(){
+        return newPassword;
     }
 }
