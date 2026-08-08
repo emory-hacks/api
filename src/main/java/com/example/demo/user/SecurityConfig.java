@@ -33,7 +33,17 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // TAKE OUT PROMOTE WHEN IMPLEMENTING so only admin cna make other ppl admin3
-                        .requestMatchers("/api/users/register", "/auth/login", "/api/generate-user-code", "/api/verify-user-code", "/error", "/api/users/promote/**").permitAll()
+                        .requestMatchers(
+                                "/api/users/register",
+                                "/api/users/register/github",
+                                "/auth/login",
+                                "/auth/github/login",
+                                "/github-access-token",
+                                "/api/generate-user-code",
+                                "/api/verify-user-code",
+                                "/error",
+                                "/api/users/promote/**"
+                        ).permitAll()
                         //.requestMatchers("/api/users/**").hasRole("ADMIN")
                         //.requestMatchers("/api/dashboard/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/announcements").authenticated()
