@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -20,6 +21,14 @@ public class EmailCodeController {
     private EmailCodeRepository emailCodeRepository;
     @Autowired
     private EmailService emailService;
+
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+    public EmailCodeController(UserRepository userRepository, PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     private final SecureRandom secureRandom = new SecureRandom();
 
@@ -54,11 +63,23 @@ public class EmailCodeController {
         EmailCode emailCode = emailCodeOptional.get();
         boolean codeMatches = emailCode.getCode().equals(request.getInputtedCode());
         boolean notExpired = !request.getCurtime().isAfter(emailCode.getExpiration());
-
         if (!codeMatches || !notExpired) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Invalid or expired code.");
         }
+        if(request.getNewPassword() == null){
+            return ResponseEntity.ok("Code verified.");
+        }
 
-        return ResponseEntity.ok("Code verified.");
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if(userOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User account not found.");
+        }
+        User user = userOptional.get();
+        String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(encodedPassword);
+        emailCodeRepository.delete(emailCode);
+
+
+        return ResponseEntity.ok("Code verified, password updated successfully.");
     }
 }
