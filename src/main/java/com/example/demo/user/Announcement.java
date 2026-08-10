@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 @Entity@Table(name = "announcements")
 public class Announcement {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String title;
     private String content;
     private String publisher;
@@ -13,12 +11,6 @@ public class Announcement {
     @Column(name = "created_at", nullable = false, updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime createdAt;
-    public Long getId(){
-        return id;
-    }
-    public void setId(Long id){
-        this.id = id;
-    }
     public String getTitle(){
         return title;
     }
@@ -40,5 +32,5 @@ public class Announcement {
     public String getPublisher() {return publisher;}
     public void setPublisher(String publisher) {this.publisher = publisher;}
     public String getPublisherName() {return publisherName;}
-    public void setPublisherName() {this.publisherName = publisherName;}
+    public void setPublisherName(String publisherName) {this.publisherName = publisherName;}
 }
