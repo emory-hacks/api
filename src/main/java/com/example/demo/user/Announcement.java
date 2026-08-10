@@ -9,6 +9,7 @@ public class Announcement {
     private String title;
     private String content;
     private String publisher;
+    private String publisherName;
     @Column(name = "created_at", nullable = false, updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime createdAt;
@@ -38,4 +39,6 @@ public class Announcement {
     }
     public String getPublisher() {return publisher;}
     public void setPublisher(String publisher) {this.publisher = publisher;}
+    public String getPublisherName() {return publisherName;}
+    public void setPublisherName() {this.publisherName = publisherName;}
 }
