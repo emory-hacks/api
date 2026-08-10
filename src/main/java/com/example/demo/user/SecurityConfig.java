@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/*/add-points").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/schedule").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/schedule/*").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/schedule").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/schedule/*").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
