@@ -17,6 +17,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailCodeRepository emailCodeRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder){
@@ -51,6 +53,11 @@ public class UserController {
         if (email.length() <= 4 || !email.endsWith(".edu")) {
             return ResponseEntity.badRequest().body("Error: Email should end with '.edu'");
         }
+        Optional<EmailCode> emailCodeOptional = emailCodeRepository.findById(email);
+        if (emailCodeOptional.isEmpty()
+                || !emailCodeOptional.get().getCode().equals(registerRequest.getInputtedCode())) {
+            return ResponseEntity.badRequest().body("Error: Invalid verification code.");
+        }
         user.setEmail(registerRequest.getEmail());
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
         user.setPassword(hashedPassword);
@@ -59,6 +66,7 @@ public class UserController {
         user.setTeamName("no team");
         // hash password here
         userRepository.save(user);
+        emailCodeRepository.delete(emailCodeOptional.get());
         return ResponseEntity.ok("User registered successfully.");
     }
     @PutMapping("/promote/{email}")
