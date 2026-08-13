@@ -25,7 +25,7 @@ public class ScheduleController {
                 .toList();
     }
 
-    @GetMapping("/schedule/current")
+    @PostMapping("/schedule/current")
     public Map<String, String> getCurrentEvent(@RequestBody CurrentEventRequest request) {
         if (request.currentTime() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "currentTime is required");
