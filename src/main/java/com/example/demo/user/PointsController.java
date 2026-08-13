@@ -40,6 +40,9 @@ public class PointsController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/award-points-fast")
     public ResponseEntity<Map<String, Object>> awardPointsFast(@RequestBody AwardPointsRequest request){
+        if (request.getToken() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "token is required");
+        }
         ScanToken scanToken = scanTokenRepository.findById(request.getToken())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid QR Code"));
         if(scanToken.isUsed() || scanToken.getExpiresAt().isBefore(LocalDateTime.now())){
@@ -71,13 +74,39 @@ public class PointsController {
         response.put("pointsAdded", request.getAmount());
         response.put("newBalance", user.getPoints());
         return ResponseEntity.ok(response);
-
-
-
-
-
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/award-points-search")
+    public ResponseEntity<Map<String, Object>> awardPointsSearch(
+            @RequestBody AwardPointsSearchRequest request) {
+        String email = request.getEmail();
+        if (email == null || email.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email is required");
+        }
+        String eventId = request.getEventId();
+        if (eventId == null || eventId.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "eventId is required");
+        }
+        if (eventClaimRepository.existsByUserEmailAndEventId(email, eventId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User has already recieved points for this event");
+        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setPoints(user.getPoints() + request.getAmount());
+        userRepository.save(user);
 
+        EventClaim claim = new EventClaim();
+        claim.setUserEmail(email);
+        claim.setEventId(eventId);
+        claim.setPointsAwarded(request.getAmount());
+        eventClaimRepository.save(claim);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "SUCCESS");
+        response.put("user", email);
+        response.put("pointsAdded", request.getAmount());
+        response.put("newBalance", user.getPoints());
+        return ResponseEntity.ok(response);
+    }
 }
