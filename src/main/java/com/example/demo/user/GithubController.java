@@ -69,6 +69,9 @@ public class GithubController {
         }
 
         String email = githubUser.get("email").toString();
+        if (email.toLowerCase().endsWith(".edu")) {
+            return ResponseEntity.badRequest().body("Error: .edu emails are not allowed for GitHub authentication");
+        }
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No account for this GitHub user");
@@ -96,6 +99,9 @@ public class GithubController {
         }
 
         String email = githubUser.get("email").toString();
+        if (email.toLowerCase().endsWith(".edu")) {
+            return ResponseEntity.badRequest().body("Error: .edu emails are not allowed for GitHub authentication");
+        }
         if (userRepository.findByEmail(email).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Email already taken!");
         }
@@ -134,7 +140,7 @@ public class GithubController {
             return null;
         }
 
-        if (user.get("email") == null) {
+        if (user.get("email") == null || user.get("email").toString().toLowerCase().endsWith(".edu")) {
             String email = fetchGithubEmail(headers);
             if (email != null) {
                 user.put("email", email);
@@ -163,7 +169,7 @@ public class GithubController {
                 continue;
             }
             Object email = emailEntry.get("email");
-            if (email == null) {
+            if (email == null || email.toString().toLowerCase().endsWith(".edu")) {
                 continue;
             }
             boolean primary = Boolean.TRUE.equals(emailEntry.get("primary"));
