@@ -59,20 +59,16 @@ public class GithubController {
             return ResponseEntity.badRequest().body("Missing accessToken in body. Use {\"accessToken\":\"gho_...\"}");
         }
 
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body("Missing email in body.");
+        }
+
         Map<String, Object> githubUser = fetchGithubUser(request.getAccessToken());
         if (githubUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid GitHub access token");
         }
-        if (githubUser.get("email") == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Unable to fetch GitHub user email. Ensure the token has user:email scope and the account has a verified email.");
-        }
 
-        String email = githubUser.get("email").toString();
-        if (email.toLowerCase().endsWith(".edu")) {
-            return ResponseEntity.badRequest().body("Error: .edu emails are not allowed for GitHub authentication");
-        }
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No account for this GitHub user");
         }
@@ -93,15 +89,19 @@ public class GithubController {
 
     @PostMapping("/api/users/register/github")
     public ResponseEntity<?> githubRegister(@RequestBody GithubAuthRequest request) {
-        Map<String, Object> githubUser = fetchGithubUser(request.getAccessToken());
-        if (githubUser == null || githubUser.get("email") == null) {
-            return ResponseEntity.badRequest().body("Unable to fetch GitHub user email");
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body("Missing email in body.");
         }
 
-        String email = githubUser.get("email").toString();
-        if (email.toLowerCase().endsWith(".edu")) {
-            return ResponseEntity.badRequest().body("Error: .edu emails are not allowed for GitHub authentication");
+        Map<String, Object> githubUser = fetchGithubUser(request.getAccessToken());
+        if (githubUser == null) {
+            return ResponseEntity.badRequest().body("Invalid GitHub access token");
         }
+
+        String email = request.getEmail();
+//        if (email.toLowerCase().endsWith(".edu")) {
+//            return ResponseEntity.badRequest().body("Error: .edu emails are not allowed for GitHub authentication");
+//        }
         if (userRepository.findByEmail(email).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Email already taken!");
         }
@@ -135,56 +135,7 @@ public class GithubController {
                 Map.class
         );
 
-        Map<String, Object> user = userResponse.getBody();
-        if (user == null) {
-            return null;
-        }
-
-        if (user.get("email") == null || user.get("email").toString().toLowerCase().endsWith(".edu")) {
-            String email = fetchGithubEmail(headers);
-            if (email != null) {
-                user.put("email", email);
-            }
-        }
-
-        return user;
-    }
-
-    private String fetchGithubEmail(HttpHeaders headers) {
-        ResponseEntity<List> emailsResponse = restTemplate.exchange(
-                "https://api.github.com/user/emails",
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                List.class
-        );
-        List<?> emails = emailsResponse.getBody();
-        if (emails == null) {
-            return null;
-        }
-
-        String verifiedFallback = null;
-        String anyFallback = null;
-        for (Object item : emails) {
-            if (!(item instanceof Map<?, ?> emailEntry)) {
-                continue;
-            }
-            Object email = emailEntry.get("email");
-            if (email == null || email.toString().toLowerCase().endsWith(".edu")) {
-                continue;
-            }
-            boolean primary = Boolean.TRUE.equals(emailEntry.get("primary"));
-            boolean verified = Boolean.TRUE.equals(emailEntry.get("verified"));
-            if (primary && verified) {
-                return email.toString();
-            }
-            if (verified && verifiedFallback == null) {
-                verifiedFallback = email.toString();
-            }
-            if (anyFallback == null) {
-                anyFallback = email.toString();
-            }
-        }
-        return verifiedFallback != null ? verifiedFallback : anyFallback;
+        return userResponse.getBody();
     }
 
     private HttpHeaders githubHeaders(String accessToken) {
