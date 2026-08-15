@@ -41,7 +41,7 @@ public class AuthController {
                 //Set this to true, as browser rejects cross-domain cookeis unlesss they run over HTTPS, so switch once you take this live and move to production env
                 .secure(false)
                 .path("/")
-                .maxAge(15*60)
+                .maxAge(4 * 24 * 60 * 60)
                 //CHANGE THIS TO NONE when implementing frontend/backend, tells browser cookie is traveling across diff domains
                 .sameSite("Lax")
                 .build();

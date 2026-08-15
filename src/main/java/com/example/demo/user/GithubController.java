@@ -78,7 +78,7 @@ public class GithubController {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(15 * 60)
+                .maxAge(4 * 24 * 60 * 60)
                 .sameSite("Lax")
                 .build();
 
