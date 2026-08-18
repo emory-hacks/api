@@ -1,7 +1,10 @@
 package com.example.demo.user;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.List;
 
@@ -56,6 +59,10 @@ public class User {
     @Column(unique = true)
     private String username;
 
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "dismissed_announcements", columnDefinition = "text[]")
+    private List<String> dismissedAnnouncements = new ArrayList<>();
+
     public User() {}
 
     @PrePersist
@@ -71,6 +78,9 @@ public class User {
         }
         if (name == null && email != null) {
             name = email.split("@")[0];
+        }
+        if (dismissedAnnouncements == null) {
+            dismissedAnnouncements = new ArrayList<>();
         }
     }
 
@@ -112,4 +122,14 @@ public class User {
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+
+    public List<String> getDismissedAnnouncements() {
+        if (dismissedAnnouncements == null) {
+            dismissedAnnouncements = new ArrayList<>();
+        }
+        return dismissedAnnouncements;
+    }
+    public void setDismissedAnnouncements(List<String> dismissedAnnouncements) {
+        this.dismissedAnnouncements = dismissedAnnouncements != null ? dismissedAnnouncements : new ArrayList<>();
+    }
 }

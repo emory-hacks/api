@@ -81,6 +81,27 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.ok("User " + email + " has been PROMOTED to admin");
     }
+    @PutMapping("/{email}/dismiss-announcement")
+    @PreAuthorize("authentication.name == #email or hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> dismissAnnouncement(@PathVariable String email, @RequestBody DismissAnnouncementRequest request) {
+        String title = request != null ? request.getTitle() : null;
+        if (title == null || title.isBlank()) {
+            return ResponseEntity.badRequest().body("Error: Announcement title is required.");
+        }
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found");
+        }
+        User user = userOptional.get();
+        List<String> dismissed = new ArrayList<>(user.getDismissedAnnouncements());
+        if (!dismissed.contains(title)) {
+            dismissed.add(title);
+            user.setDismissedAnnouncements(dismissed);
+            userRepository.save(user);
+        }
+        return ResponseEntity.ok(user);
+    }
+
     @PutMapping("/{email}/add-points")
     public ResponseEntity<?> addPoints(@PathVariable String email, @RequestParam int amount){
         Optional<User> userOptional = userRepository.findByEmail(email);
