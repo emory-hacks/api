@@ -10,20 +10,23 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import org.springframework.security.access.prepost.PreAuthorize;
-
+import com.example.demo.event.ScheduleEventResponse;
+import com.example.demo.event.EventRepository;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+    @Autowired
+    private final EventRepository eventRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private EmailCodeRepository emailCodeRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, EventRepository eventRepository){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.eventRepository = eventRepository;
     }
     @GetMapping
     public List<User> getAllUsers() {
@@ -115,6 +118,8 @@ public class UserController {
         return ResponseEntity.ok("Successfuly added " + amount + " points to " + email + ". New balance: " + user.getPoints());
 
     }
+
+
 
 
 

@@ -130,4 +130,12 @@ public class ScheduleController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Body is required");
         }
     }
+    @GetMapping("/schedule/upcoming")
+    public List<ScheduleEventResponse> getUpcomingEvents(){
+        return eventRepository.findUpcomingEventsInNext30Minutes()
+                .stream()
+                .map(ScheduleEventResponse::from)
+                .toList();
+    }
+
 }
