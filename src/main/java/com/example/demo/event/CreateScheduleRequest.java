@@ -7,5 +7,6 @@ public record CreateScheduleRequest(
         String body,
         String location,
         LocalDateTime startTime,
-        LocalDateTime endTime) {
+        LocalDateTime endTime,
+        int points) {
 }
