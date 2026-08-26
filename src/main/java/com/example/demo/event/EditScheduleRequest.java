@@ -9,6 +9,7 @@ public class EditScheduleRequest {
     private String correctedLocation;
     private LocalDateTime correctedStartTime;
     private LocalDateTime correctedEndTime;
+    private Integer correctedPoints;
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -22,4 +23,6 @@ public class EditScheduleRequest {
     public void setCorrectedStartTime(LocalDateTime correctedStartTime) { this.correctedStartTime = correctedStartTime; }
     public LocalDateTime getCorrectedEndTime() { return correctedEndTime; }
     public void setCorrectedEndTime(LocalDateTime correctedEndTime) { this.correctedEndTime = correctedEndTime; }
+    public Integer getCorrectedPoints() { return correctedPoints; }
+    public void setCorrectedPoints(Integer correctedPoints) { this.correctedPoints = correctedPoints; }
 }

@@ -7,7 +7,8 @@ public record ScheduleEventResponse(
         String body,
         String location,
         LocalDateTime startTime,
-        LocalDateTime endTime) {
+        LocalDateTime endTime,
+        int points) {
 
     public static ScheduleEventResponse from(Event event) {
         return new ScheduleEventResponse(
@@ -15,6 +16,7 @@ public record ScheduleEventResponse(
                 event.getBody(),
                 event.getLocation(),
                 event.getStartTime(),
-                event.getEndTime());
+                event.getEndTime(),
+                event.getPoints());
     }
 }

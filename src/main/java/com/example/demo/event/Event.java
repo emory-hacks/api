@@ -16,6 +16,9 @@ public class Event {
     private LocalDateTime endTime;
     private String location;
 
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int points = 0;
+
     public Event() {}
 
     public String getTitle() { return title; }
@@ -28,4 +31,6 @@ public class Event {
     public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+    public int getPoints() {return points;}
+    public void setPoints(int points) {this.points = points;}
 }
