@@ -56,6 +56,12 @@ public class PointsController {
         }
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (eventId.equals("Registration")) {
+            user.setCheckedIn(true);
+        }
+        if (!user.isCheckedIn()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not checked in");
+        }
         user.setPoints(user.getPoints()+request.getAmount());
         userRepository.save(user);
 
