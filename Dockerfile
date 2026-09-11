@@ -20,5 +20,9 @@ WORKDIR /app
 
 COPY --from=build /app/app.jar app.jar
 
+# Cap heap/metaspace/stack so RSS fits a 512MB Render instance.
+# Override JAVA_OPTS in the Render dashboard if you bump RAM.
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=40 -XX:MaxMetaspaceSize=128m -Xss512k -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError"
+
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --server.port=${PORT:-8080}"]
