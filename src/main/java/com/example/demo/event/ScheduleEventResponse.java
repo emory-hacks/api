@@ -8,7 +8,8 @@ public record ScheduleEventResponse(
         String location,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        int points) {
+        int points,
+        boolean isDeadline) {
 
     public static ScheduleEventResponse from(Event event) {
         return new ScheduleEventResponse(
@@ -17,6 +18,7 @@ public record ScheduleEventResponse(
                 event.getLocation(),
                 event.getStartTime(),
                 event.getEndTime(),
-                event.getPoints());
+                event.getPoints(),
+                event.isDeadline());
     }
 }

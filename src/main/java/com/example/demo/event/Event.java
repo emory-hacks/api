@@ -19,6 +19,9 @@ public class Event {
     @Column(nullable = false, columnDefinition = "integer default 0")
     private int points = 0;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeadline = false;
+
     public Event() {}
 
     public String getTitle() { return title; }
@@ -33,4 +36,6 @@ public class Event {
     public void setLocation(String location) { this.location = location; }
     public int getPoints() {return points;}
     public void setPoints(int points) {this.points = points;}
+    public boolean isDeadline() { return isDeadline; }
+    public void setDeadline(boolean deadline) { this.isDeadline = deadline; }
 }
