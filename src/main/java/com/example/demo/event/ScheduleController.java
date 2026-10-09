@@ -57,6 +57,7 @@ public class ScheduleController {
         event.setStartTime(request.startTime());
         event.setEndTime(request.endTime());
         event.setPoints(request.points());
+        event.setDeadline(request.isDeadline());
         return ScheduleEventResponse.from(eventRepository.save(event));
     }
 
@@ -74,6 +75,7 @@ public class ScheduleController {
         event.setStartTime(request.startTime());
         event.setEndTime(request.endTime());
         event.setPoints(request.points());
+        event.setDeadline(request.isDeadline());
 
         return ScheduleEventResponse.from(eventRepository.save(event));
     }
@@ -97,6 +99,9 @@ public class ScheduleController {
         var correctedStartTime = request.getCorrectedStartTime() != null ? request.getCorrectedStartTime() : event.getStartTime();
         var correctedEndTime = request.getCorrectedEndTime() != null ? request.getCorrectedEndTime() : event.getEndTime();
         int correctedPoints = request.getCorrectedPoints() != null ? request.getCorrectedPoints() : event.getPoints();
+        boolean correctedIsDeadline = request.getCorrectedIsDeadline() != null
+                ? request.getCorrectedIsDeadline()
+                : event.isDeadline();
 
         if (title.equals(correctedTitle)) {
             event.setBody(correctedBody);
@@ -104,6 +109,7 @@ public class ScheduleController {
             event.setStartTime(correctedStartTime);
             event.setEndTime(correctedEndTime);
             event.setPoints(correctedPoints);
+            event.setDeadline(correctedIsDeadline);
             return ScheduleEventResponse.from(eventRepository.save(event));
         }
 
@@ -114,6 +120,7 @@ public class ScheduleController {
         updated.setStartTime(correctedStartTime);
         updated.setEndTime(correctedEndTime);
         updated.setPoints(correctedPoints);
+        updated.setDeadline(correctedIsDeadline);
 
         eventRepository.delete(event);
         eventRepository.flush();

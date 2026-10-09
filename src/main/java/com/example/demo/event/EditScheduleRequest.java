@@ -10,6 +10,7 @@ public class EditScheduleRequest {
     private LocalDateTime correctedStartTime;
     private LocalDateTime correctedEndTime;
     private Integer correctedPoints;
+    private Boolean correctedIsDeadline;
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -25,4 +26,6 @@ public class EditScheduleRequest {
     public void setCorrectedEndTime(LocalDateTime correctedEndTime) { this.correctedEndTime = correctedEndTime; }
     public Integer getCorrectedPoints() { return correctedPoints; }
     public void setCorrectedPoints(Integer correctedPoints) { this.correctedPoints = correctedPoints; }
+    public Boolean getCorrectedIsDeadline() { return correctedIsDeadline; }
+    public void setCorrectedIsDeadline(Boolean correctedIsDeadline) { this.correctedIsDeadline = correctedIsDeadline; }
 }

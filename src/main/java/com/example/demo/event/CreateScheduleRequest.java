@@ -8,5 +8,6 @@ public record CreateScheduleRequest(
         String location,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        int points) {
+        int points,
+        boolean isDeadline) {
 }
