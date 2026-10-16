@@ -34,7 +34,7 @@ public class EmailCodeController {
 
     @PostMapping("/generate-user-code")
     public ResponseEntity<?> generateUserCode(@RequestBody GenerateUserCodeRequest request) {
-        String code = String.format("%05d", secureRandom.nextInt(100_000));
+        String code = String.format("%06d", secureRandom.nextInt(1_000_000));
 
         EmailCode emailCode = new EmailCode();
         emailCode.setEmail(request.getEmail());

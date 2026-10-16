@@ -35,7 +35,7 @@ public class EmailService {
         message.setFrom(sender);
         message.setTo(to);
         message.setSubject("Your Emory Hacks verification code");
-        message.setText("Your verification code is: " + code + "\n\nThis code expires in 5 minutes.");
+        message.setText("Your verification code is: " + code + ". This code will expire in 5 minutes.");
         mailSender.send(message);
     }
 }
