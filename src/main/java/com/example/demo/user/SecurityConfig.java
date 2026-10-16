@@ -1,5 +1,6 @@
 package com.example.demo.user;
 
+import com.example.demo.config.IpRateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,8 +18,10 @@ import org.springframework.http.HttpMethod;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final JwtUtils jwtUtils;
-    public SecurityConfig(JwtUtils jwtUtils) {
+    private final IpRateLimitFilter ipRateLimitFilter;
+    public SecurityConfig(JwtUtils jwtUtils, IpRateLimitFilter ipRateLimitFilter) {
         this.jwtUtils = jwtUtils;
+        this.ipRateLimitFilter = ipRateLimitFilter;
     }
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -58,7 +61,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/schedule/*").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(ipRateLimitFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 }
