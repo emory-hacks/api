@@ -50,6 +50,12 @@ public class PointsController {
         }
         String userEmail = scanToken.getUserEmail();
         String eventId = request.getEventId();
+        if ("purchase".equals(eventId)) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("userEmail", userEmail);
+            response.put("eventId", eventId);
+            return ResponseEntity.ok(response);
+        }
         if(eventClaimRepository.existsByUserEmailAndEventId(userEmail, eventId)){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User has already recieved points for this event");
 
@@ -93,6 +99,12 @@ public class PointsController {
         String eventId = request.getEventId();
         if (eventId == null || eventId.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "eventId is required");
+        }
+        if ("purchase".equals(eventId)) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("userEmail", email);
+            response.put("eventId", eventId);
+            return ResponseEntity.ok(response);
         }
         if (eventClaimRepository.existsByUserEmailAndEventId(email, eventId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User has already recieved points for this event");
