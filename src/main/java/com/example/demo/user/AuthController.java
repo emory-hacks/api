@@ -38,12 +38,10 @@ public class AuthController {
         String realJwtToken = jwtUtils.generateToken(user.getEmail(), roles);
         ResponseCookie cookie = ResponseCookie.from("token", realJwtToken)
                 .httpOnly(true)
-                //Set this to true, as browser rejects cross-domain cookeis unlesss they run over HTTPS, so switch once you take this live and move to production env
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(4 * 24 * 60 * 60)
-                //CHANGE THIS TO NONE when implementing frontend/backend, tells browser cookie is traveling across diff domains
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
