@@ -3,6 +3,7 @@ package com.example.demo.config;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import java.io.IOException;
 public class RateLimitInterceptor implements HandlerInterceptor {
     private final SlidingWindowRateLimiter limiter;
 
+    @Autowired
     public RateLimitInterceptor(
             @Value("${app.rate-limit.max-requests:20}") int maxRequests,
             @Value("${app.rate-limit.window-seconds:10}") int windowSeconds) {
