@@ -119,6 +119,17 @@ public class UserController {
 
     }
 
+    @DeleteMapping("/{email}")
+    @PreAuthorize("authentication.name == #email or hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: User not found.");
+        }
+        userRepository.delete(userOptional.get());
+        return ResponseEntity.ok("User " + email + " has been deleted.");
+    }
+
 
 
 
