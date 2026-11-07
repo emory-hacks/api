@@ -73,7 +73,7 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully.");
     }
     @PutMapping("/promote/{email}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> promoteToAdmin(@PathVariable String email){
         Optional<User> userOptional = userRepository.findByEmail(email);
         if(!userOptional.isPresent()){
