@@ -46,7 +46,6 @@ public class ScheduleController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/schedule")
     public ScheduleEventResponse createSchedule(@RequestBody CreateScheduleRequest request) {
-        requireBody(request.body());
         if (eventRepository.existsById(request.title())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Event already exists");
         }
@@ -66,7 +65,6 @@ public class ScheduleController {
     public ScheduleEventResponse updateSchedule(
             @PathVariable String title,
             @RequestBody CreateScheduleRequest request) {
-        requireBody(request.body());
         Event event = eventRepository.findById(title)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
@@ -137,11 +135,6 @@ public class ScheduleController {
         return Map.of("message", "Event deleted");
     }
 
-    private static void requireBody(String body) {
-        if (body == null || body.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Body is required");
-        }
-    }
     @GetMapping("/schedule/upcoming")
     public List<ScheduleEventResponse> getUpcomingEvents(){
         return eventRepository.findUpcomingEventsInNext30Minutes()
