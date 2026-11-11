@@ -25,7 +25,7 @@ public class EmailService {
         String sender = StringUtils.hasText(from) ? from : username;
         if (!StringUtils.hasText(sender) || !sender.contains("@") || sender.startsWith("@")) {
             throw new IllegalStateException(
-                    "Invalid spring.mail.from / username. Set a full address like you@gmail.com");
+                    "Invalid spring.mail.from / username. Set a full address like noreply@emoryhacks.com");
         }
         if (!StringUtils.hasText(to) || !to.contains("@")) {
             throw new IllegalArgumentException("Invalid recipient email: " + to);
