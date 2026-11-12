@@ -133,4 +133,33 @@ public class PointsController {
         response.put("newBalance", user.getPoints());
         return ResponseEntity.ok(response);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/check-in")
+    public ResponseEntity<Map<String, Object>> checkIn(@RequestBody CheckInRequest request) {
+        String email = request.getEmail();
+        if (email == null || email.isBlank()) {
+            if (request.getToken() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email or token is required");
+            }
+            ScanToken scanToken = scanTokenRepository.findById(request.getToken())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid QR Code"));
+            if (scanToken.isUsed() || scanToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "QR Code is already used or expired.");
+            }
+            email = scanToken.getUserEmail();
+        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setCheckedIn(true);
+        userRepository.save(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("email", user.getEmail());
+        response.put("name", user.getName());
+        response.put("teamName", user.getTeamName());
+        response.put("points", user.getPoints());
+        response.put("checkedIn", true);
+        return ResponseEntity.ok(response);
+    }
 }
