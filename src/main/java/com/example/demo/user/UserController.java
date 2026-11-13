@@ -53,9 +53,9 @@ public class UserController {
         }
         User user =  new User();
         String email = registerRequest.getEmail();
-        if (email.length() <= 4 || !email.endsWith(".edu")) {
-            return ResponseEntity.badRequest().body("Error: Email should end with '.edu'");
-        }
+//        if (email.length() <= 4 || !email.endsWith(".edu")) {
+//            return ResponseEntity.badRequest().body("Error: Email should end with '.edu'");
+//        }
         Optional<EmailCode> emailCodeOptional = emailCodeRepository.findById(email);
         if (emailCodeOptional.isEmpty()
                 || !emailCodeOptional.get().getCode().equals(registerRequest.getInputtedCode())) {
