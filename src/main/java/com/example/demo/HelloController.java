@@ -13,22 +13,7 @@ public class HelloController {
     public HelloController(UserRepository userRepository){
         this.userRepository = userRepository;
     }
-
-    @PostMapping("/user/add")
-    public User addUser(@RequestBody User user){
-        return userRepository.save(user);
-    }
-
-    @GetMapping("/users")
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable UUID id){
-        return userRepository.findById(id).orElse(null);
-    }
-
+    
    @GetMapping("/")
     public String index(){
        return "Spring is officially working!";
